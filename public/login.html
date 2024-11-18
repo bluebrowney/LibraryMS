@@ -39,8 +39,8 @@
             }
 
             const responseType = response.headers.get('Content-Type');
-            if(responseType && responseType.includes('text/html')) {
-              return response.text();
+            if(response.redirected) {
+              return response.url;
             } else if (responseType && responseType.includes('application/json')) {
               return response.json();
             } else {
@@ -51,7 +51,7 @@
           .then(response => {
 
             if(typeof response === 'string') {
-              document.querySelector('body').innerHTML = response;
+              window.location.href = response 
             } else {
               if(document.querySelector('#noti') == undefined) {
                 noti = document.createElement('p')

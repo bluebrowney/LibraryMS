@@ -1,7 +1,8 @@
   // Function to display data
   function process_search(data) {
     const container = document.getElementById("data-display");
-  
+    container.innerHTML = "";
+
     // Create a table
     const table = document.createElement("table");
     table.border = "1";
