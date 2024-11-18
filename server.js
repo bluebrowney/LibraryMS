@@ -1,0 +1,138 @@
+/*Configure Environment Variables (For Security)*/
+require('dotenv').config()
+
+/*Imports*/
+const mysql = require('mysql2');
+const express = require('express')
+const path = require('path')
+const app = express()
+const port = 3000
+const ip = '127.0.0.1'
+
+
+/*Define Connect through MySQL Server to Database (LibraryMS)*/
+let connection = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: 3306,
+    multipleStatements: true
+});
+
+/*Connect to the Database*/
+connection.connect();
+
+app.use(express.static(path.join(__dirname, 'public', 'styles')));
+app.use(express.static(path.join(__dirname, 'public', 'scripts')));
+app.use(express.json());
+
+// SUPPLY INITIAL PAGE
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', './login.html'));
+});
+
+app.post('/validate', (req, res) => {
+
+    connection.query(`SELECT Count(*) 
+                      FROM Member
+                      WHERE (Email='${req.body.login}' OR Phone_Number='${req.body.login}') AND passwd='${req.body.passwd}';`,
+                    (err, results, fields) => {
+                        if(err) {
+                            console.log(err);
+                            return;
+                        }
+                        
+                        if(results[0]['Count(*)'] != 0) {
+                            res.redirect(301, '/home');
+                        } else {
+                            res.send({ error: "incorrect_credentials"});
+                        }
+                    })
+});
+
+//PAGES
+app.get('/home', (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+
+app.get('/history', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', './history.html'));
+});
+
+app.get('/productInput', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', './productInput.html'));
+});
+
+app.get('/RegisterUser', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', './RegisterUser.html'));
+});
+
+
+
+// SEARCH QUERY
+app.get('/api/search', (req, res) => {
+    let options, sortby, search_str;
+    condition = '';
+    let cond_start = true;
+
+    //HANDLING GENRE FILTER
+    if (req.query.genre != undefined) {
+        if(typeof req.query.genre == 'string') {
+            condition += `genre IN ('${req.query.genre}')`
+        } else {
+            condition += `genre IN ('${req.query.genre[0]}'`
+            for(let idx = 1; idx < req.query.genre.length; idx++) {
+                condition += `, '${req.query.genre[idx]}'`
+            }
+            condition += ") "
+        }
+
+        cond_start = false;
+    }
+
+    /*Checking Search String*/
+    if(req.query.search_str != undefined && req.query.search_str.trim() != '') {
+        condition += `${cond_start?"":"AND"} (ISAN LIKE '%${req.query.search_str}%' OR 
+                           Movie_Title LIKE '%${req.query.search_str}%' OR 
+                           Studio LIKE '%${req.query.search_str}%' OR 
+                           ISBN LIKE '%${req.query.search_str}%' OR
+                           Book_Title LIKE '%${req.query.search_str}%' OR 
+                           Publisher LIKE '%${req.query.search_str}%') `;
+        cond_start = false;
+    }
+
+    if(req.query.mediaType != undefined) {
+        condition += `${cond_start?"":"AND "}${(req.query.mediaType == 'book' ? "ISBN IS NOT NULL " : "" )}`
+        condition += `${cond_start?"":"AND "}${(req.query.mediaType == 'movie' ? "ISAN IS NOT NULL " : "" )}`
+        cond_start = false;
+    }
+
+    /*Construct Query*/
+    if(condition!="") {
+        condition = "WHERE " + condition + " ";
+    }
+
+
+    if(req.query.searchOption != undefined) {
+        condition += `ORDER BY ${req.query.searchOption}`;
+    }
+
+    connection.query(`SELECT *
+                      FROM search_table
+                      ${condition};`, (err, results, fields) => {
+                        if(err) {
+                            console.log(err);
+                        }
+                        
+                        res.send(results);
+                      })
+});
+
+
+
+app.listen(port, ip, () => {
+    console.log(`Server is listening on ${ip} port ${port}`);
+});
+

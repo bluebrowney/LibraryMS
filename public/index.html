@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Home</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav>
+      <a href="/home" aria-current="page">Home</a>
+      <a href="/RegisterUser">Register</a>
+      <a href="/productInput">Product Input</a>
+      <a href="/history">History</a>
+      <a href="/">Logout</a>
+    </nav>
+    <form method="GET" action="/api/search">
+      <main class="container">
+        <h1 class="page-title">Search Library</h1>
+        <!-- Search Bar -->
+        <div>
+          <label for="search">Search</label>
+          <input type="text" id="search" placeholder="Search by title, author, ISBN..." name="search_str"/>
+        </div>
+
+        <!-- Sort By Dropdown -->
+        <div class="filter-section">
+          <label for="searchOption">Sort by:</label>
+          <select name="searchOption" id="searchOption">
+            <option value="" disabled selected>Select Sorting</option>
+            <option value="title">Title</option>
+            <option value="publisher">Publisher</option>
+            <option value="studio">Studio</option>
+            <option value="runtime">Runtime</option>
+            <option value="rating">Rating</option>
+          </select>
+        </div>
+
+        <!-- Genre Filter Section with Checkboxes -->
+        <div class="filter-section">
+          <h3>Filter by Genre</h3>
+          <label><input type="checkbox" name="genre" value="Fsiction" /> Fiction</label>
+          <label><input type="checkbox" name="genre" value="Non-Fiction" /> Non-fiction</label>
+          <label><input type="checkbox" name="genre" value="Mystery" /> Mystery</label>
+          <label><input type="checkbox" name="genre" value="Fantasy" /> Fantasy</label>
+          <label><input type="checkbox" name="genre" value="Science" /> Science</label>
+          <label><input type="checkbox" name="genre" value="Biography" /> Biography</label>
+          <label><input type="checkbox" name="genre" value="History" /> History</label>
+        </div>
+
+        <!-- Options Section with Checkboxes for Book or Movie -->
+        <div class="filter-section">
+          <h3>Options</h3>
+          <label><input type="checkbox" name="mediaType" value="book" /> Book</label>
+          <label><input type="checkbox" name="mediaType" value="movie" /> Movie</label>
+        </div>
+      </main>
+    </form>
+    <!-- Section for displaying JSON data -->
+    <main class="container">
+      <h2 class="page-title">Product List</h2>
+      <div id="data-display" class="data-display">
+        <!-- JSON data will be dynamically injected here -->
+      </div>
+    </main>
+
+    <!-- Modal for editing items -->
+    <div id="editModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h2>Edit Book</h2>
+        <form id="editForm">
+          <label for="editTitle">Title:</label>
+          <input type="text" id="editTitle" name="title" />
+          <label for="editGenre">Genre:</label>
+          <input type="text" id="editGenre" name="genre" />
+          <label for="editPrice">Price:</label>
+          <input type="number" id="editPrice" name="price" step="0.01" />
+          <label for="editPublisher">Publisher:</label>
+          <input type="text" id="editPublisher" name="publisher" />
+          <button type="button" onclick="saveChanges()">Save</button>
+        </form>
+      </div>
+    </div>
+    <script src="display_query.js"></script>
+    <script src="query.js"></script>
+  </body>
+</html>

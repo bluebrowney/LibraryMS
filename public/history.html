@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>History</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="script.js"></script>
+  </head>
+  <body>
+    <nav>
+      <a href="/home" aria-current="page">Home</a>
+      <a href="/RegisterUser">Register</a>
+      <a href="/productInput">Product Input</a>
+      <a href="/history">History</a>
+      <a href="/">Logout</a>
+    </nav>
+    <main class="container">
+      <h2 class="page-title">History</h2>
+      <div class="filter-container">
+        <label for="search">Search</label>
+        <input type="text" id="search" placeholder="Enter search term..." />
+        
+        <label for="searchOption">Filter by:</label>
+        <select name="searchOption" id="searchOption">
+          <option value="title">Title</option>
+          <option value="genre">Genre</option>
+          <option value="isbn">ISBN</option>
+          <option value="publisher">Publisher</option>
+          <option value="isan">ISAN</option>
+          <option value="studio">Studio</option>
+        </select>
+        
+        <label for="start">Start Date</label>
+        <input type="date" id="start" />
+        
+        <label for="end">End Date</label>
+        <input type="date" id="end" />
+      </div>
+      <!-- Show History table -->
+    </main>
+  </body>
+</html>
