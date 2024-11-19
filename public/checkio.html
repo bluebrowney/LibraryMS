@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css" />
+    <title>Check out</title>
+</head>
+<body>
+    <h1>Check Out</h1>
+    <form onsubmit="confirmation" method="POST" action="/api/">
+        <label for="member">Member Id:</label>
+        <input id="member" type="Number" >
+        <label for="product">Product Id:</label>
+        <input id="product" type="Number">
+        <label for="copy">Copy Number</label>
+        <input id="copy" type="number">
+    </form>
+</body>
+<script>
+    // must input validation`
+    function confirmation(e) {
+        console.log(e);
+        formInfo = new FormData(e.target);
+        console.log(formInfo);
+        message = `
+            <div>
+                <h2>CHECK OUT CONFIRMATION<h2>
+                <p>${formInfo.product}</p>
+            </div>
+        `
+    }
+</script>
+</html>
