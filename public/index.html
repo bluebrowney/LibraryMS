@@ -7,12 +7,28 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <style>
+        .data-display {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            padding:1em
+        }
+        .card h3 {
+            text-align: center;
+        }
+
+    </style>
     <nav>
       <a href="/home" aria-current="page">Home</a>
       <a href="/history">History</a>
       <a href="/">Logout</a>
     </nav>
-    <form method="GET" action="/api/search">
+    <form id="search" method="GET" action="/api/search">
       <main class="container">
         <h1 class="page-title">Search Library</h1>
         <!-- Search Bar -->
@@ -59,11 +75,12 @@
       <h2 class="page-title">Product List</h2>
       <div id="data-display" class="data-display">
         <!-- JSON data will be dynamically injected here -->
+         
       </div>
     </main>
 
     <!-- Modal for editing items -->
-    <div id="editModal" class="modal">
+    <!-- <div id="editModal" class="modal">
       <div class="modal-content">
         <span class="close-btn" onclick="closeModal()">&times;</span>
         <h2>Edit Book</h2>
@@ -79,8 +96,9 @@
           <button type="button" onclick="saveChanges()">Save</button>
         </form>
       </div>
-    </div>
-    <script src="display_query.js"></script>
+    </div> -->
+    <!-- change to just card_query -->
+    <script src="card_query.ts"></script>
     <script src="query.js"></script>
   </body>
 </html>
