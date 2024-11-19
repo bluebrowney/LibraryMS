@@ -105,8 +105,7 @@
         document.getElementById("editIsan").value = item.ISAN || "";
         document.getElementById("editRuntime").value = item.Runtime || "";
         document.getElementById("editStudio").value = item.Studio || "";
-
-
+        
     }
   
     modal.style.display = "flex";

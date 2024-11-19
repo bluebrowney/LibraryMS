@@ -78,7 +78,7 @@
         e.preventDefault();
         const productInfo = new FormData(e.target);
 
-        fetch('http://localhost:3000/api/upload_book', {
+        fetch('http://localhost:3000/api/upload_product', {
           method: 'POST',
           headers: { 'Content-Type': "application/json" },
           body: JSON.stringify({

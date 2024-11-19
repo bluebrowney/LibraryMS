@@ -39,6 +39,11 @@ app.get('/', (req, res) => {
     //res.sendFile(path.join(__dirname, 'public', './login.html'));
 });
 
+let userType = {
+    is_librarian: false,
+    is_admin: false
+};
+
 app.post('/validate', (req, res) => {
     console.log(req.body);
     const {login, passwd} = req.body;
@@ -58,11 +63,21 @@ app.post('/validate', (req, res) => {
                         console.log(results);
 
                         if(results[0]['Is_Member'] != 0) {
+                            if(results[0]['Is_Librarian'] != 0) {
+                                userType.is_librarian = true;
+                            } else {
+                                userType.is_librarian = false;
+                            }
+                            if(results[0]['Is_Admin'] != 0) {
+                                userType.is_admin = true;
+                            } else {
+                                userType.is_admin = false;
+                            }
                             res.redirect(301, '/home');
                         } else {
                             res.send({ error: "incorrect_credentials"});
                         } 
-                        
+                     
                         /*else {
                             const user = results[0]
                             let role = user.Salary !== null ? 'librarian' : 'user';
@@ -75,9 +90,12 @@ app.post('/validate', (req, res) => {
 
 //PAGES
 app.get('/home', (req, res) => {
-    res.render("index");
+    res.render("index", { userType });
 });
 
+app.get('/profile', (req, res) => {
+    res.render("profile", { userType });
+})
 
 app.get('/history', (req, res) => {
     res.render('history');
@@ -115,7 +133,7 @@ app.post('/api/register', (req, res) => {
                     });
 });
 
-app.post('/api/upload_book', (req, res) => {
+app.post('/api/upload_product', (req, res) => {
     let query = req.body;
     let book = query.productType == "book" ? true : false;
     connection.query(`SELECT Count(*)
@@ -140,6 +158,10 @@ app.post('/api/upload_book', (req, res) => {
                             res.send({msg: "That product already exists", color: "red"})
                         }
                     });
+});
+
+app.post('/api/update_product', (req, res) => {
+    //Create update query
 });
 
 // SEARCH QUERY
