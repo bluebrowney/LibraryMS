@@ -24,13 +24,17 @@ let connection = mysql.createConnection({
 /*Connect to the Database*/
 connection.connect();
 
+app.set('view engine', 'ejs');
+app.set('views', './public');
+
 app.use(express.static(path.join(__dirname, 'public', 'styles')));
 app.use(express.static(path.join(__dirname, 'public', 'scripts')));
 app.use(express.json());
 
 // SUPPLY INITIAL PAGE
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', './login.html'));
+    res.render('login');
+    //res.sendFile(path.join(__dirname, 'public', './login.html'));
 });
 
 app.post('/validate', (req, res) => {
@@ -61,20 +65,20 @@ app.post('/validate', (req, res) => {
 
 //PAGES
 app.get('/home', (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+    res.render("index");
 });
 
 
 app.get('/history', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', './history.html'));
+    res.render('history');
 });
 
 app.get('/productInput', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', './productInput.html'));
+    res.render('productInput');
 });
 
 app.get('/RegisterUser', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', './RegisterUser.html'));
+    res.render('RegisterUser');
 });
 
 app.post('/api/register', (req, res) => {
