@@ -10,6 +10,7 @@
   <body>
     <nav>
       <a href="/home" aria-current="page">Home</a>
+      <a href="/profile" aria-current="page">Profile</a>
       <a href="/productInput">Product Input</a>
       <a href="/history">User Manager</a>
       <a href="/">Logout</a>
@@ -78,7 +79,7 @@
         e.preventDefault();
         const productInfo = new FormData(e.target);
 
-        fetch('http://localhost:3000/api/upload_book', {
+        fetch('http://localhost:3000/api/upload_product', {
           method: 'POST',
           headers: { 'Content-Type': "application/json" },
           body: JSON.stringify({
