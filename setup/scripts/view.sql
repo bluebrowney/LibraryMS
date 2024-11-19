@@ -47,3 +47,22 @@ create view search_table AS
 select * from product natural join temp_table;
 
 select * from search_table;
+
+CREATE VIEW role_table as
+SELECT member, librarian, a.member_id as admin
+FROM (SELECT m.member_ID as member, l.member_id as librarian
+from Member as m LEFT OUTER JOIN librarians as l on m.member_id = l.member_id) as ml LEFT OUTER JOIN admins as a ON ml.member = a.member_id;
+
+SELECT Count(member) as Is_Member, Count(librarian) as Is_Librarian, Count(admin) as Is_Admin
+FROM role_table
+where member=5;
+
+SELECT * 
+FROM role_table;
+
+SELECT Count(member) as Is_Member, Count(librarian) as Is_Librarian, Count(admin) as Is_Admin 
+                      FROM role_table
+                      WHERE member IN 
+                            (SELECT Member_ID 
+                             FROM Member
+                             WHERE (Email='brian.smith@gmail.com' OR Phone_Number='') AND passwd='briandgoat55');
