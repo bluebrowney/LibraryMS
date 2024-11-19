@@ -98,15 +98,19 @@ app.get('/profile', (req, res) => {
 })
 
 app.get('/history', (req, res) => {
-    res.render('history');
+    res.render('history', { userType });
 });
 
 app.get('/productInput', (req, res) => {
-    res.render('productInput');
+    res.render('productInput', { userType });
 });
 
 app.get('/RegisterUser', (req, res) => {
     res.render('RegisterUser');
+});
+
+app.get('/adminIndex', (req, res) => {
+    res.render('adminIndex', { userType });
 });
 
 app.post('/api/register', (req, res) => {
