@@ -36,29 +36,37 @@ app.get('/', (req, res) => {
 });
 
 app.post('/validate', (req, res) => {
-
     console.log(req.body);
+    const {login, passwd} = req.body;
 
-    connection.query(`SELECT Count(*) 
-                      FROM Member
-                      WHERE (Email='${req.body.login}' OR Phone_Number='${req.body.login}') AND passwd='${req.body.passwd}';`,
+    connection.query(`SELECT member.Member_id, Salary
+                      FROM Member LEFT JOIN librarians on member.Member_id=librarians.Member_id
+                      WHERE (Email='${login}' OR Phone_Number='${login}') AND passwd='${passwd}';`,
                     (err, results, fields) => {
                         if(err) {
                             console.log(err);
                             return;
                         }
-                        
-                        if(results[0]['Count(*)'] != 0) {
-                            res.redirect(301, '/home');
-                        } else {
+                        if(results.length === 0) {
                             res.send({ error: "incorrect_credentials"});
+                        } else {
+                            const user = results[0]
+                            let role = user.Salary !== null ? 'librarian' : 'user';
+                            // sessionStorage.setItem('role', role);
+                            // sessionStorage.setItem('id', user.Member_id);
+                            res.redirect(301, `/home?role=${role}&id=${user.Member_id}`);
                         }
                     });
 });
 
 //PAGES
 app.get('/home', (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+    const role = req.query.role;
+    if (role !== undefined && role.localeCompare("librarian") === 0) {
+        res.sendFile(path.join(__dirname, "public","librarianIndex.html"));
+    } else {
+        res.sendFile(path.join(__dirname, "public", "index.html"));
+    }
 });
 
 
