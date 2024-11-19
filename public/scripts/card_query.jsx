@@ -3,11 +3,15 @@
     const container = document.getElementById("data-display");
     container.innerHTML = "";
 
+    container.style.gap = "10px";
+
     // Create a table
     // Create table body
     const tbody = document.createElement("tbody");
     data.forEach((item, index) => {
-        const card = document.createElement("div");
+        const card = document.createElement("div")
+        card.className = "card";
+        card.style.backgroundColor = "rgb(200, 200, 200)";
     
         // Determine type (Book or Movie)
         const title = item.Title
