@@ -5,9 +5,11 @@ require('dotenv').config()
 const mysql = require('mysql2');
 const express = require('express')
 const path = require('path')
+const cors = require('cors')
 const app = express()
 const port = 3000
 const ip = '127.0.0.1'
+app.use(cors({origin: '*'}));
 
 
 
