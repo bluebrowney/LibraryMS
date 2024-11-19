@@ -67,7 +67,7 @@
       const actionTd = document.createElement("td");
       const editButton = document.createElement("button");
       editButton.textContent = "Edit";
-      editButton.onclick = () => openModal(index, item);
+      editButton.onclick = () => openModal(index, item, type);
       actionTd.appendChild(editButton);
       row.appendChild(actionTd);
   
@@ -80,12 +80,34 @@
   }
   
   // Function to open the modal with pre-filled data
-  function openModal(index, item) {
+  function openModal(index, item, type) {
     const modal = document.getElementById("editModal");
-    document.getElementById("editTitle").value = item.Book_Title || item.Movie_Title || "";
+
+    document.getElementById("editTitle").value = item.Title || "";
     document.getElementById("editGenre").value = item.Genre || "";
     document.getElementById("editPrice").value = item.Price || "";
-    document.getElementById("editPublisher").value = item.Publisher || item.Studio || "";
+    document.getElementById("editAvailable").value = item.Available_Ct || 0;
+    document.getElementById("editLeased").value = item.Leased_Ct || 0;
+    document.getElementById("editRequests").value = item.Request_Ct || 0;
+
+    if(type == "Book") {
+        document.querySelector(".book_form").style.display = "inline-block";
+        document.querySelector(".movie_form").style.display = "none";
+
+        document.getElementById("editNum_pages").value = item.Page_Count || "";
+        document.getElementById("editPublisher").value = item.Publisher || "";
+        document.getElementById("editIsbn").value = item.ISBN || "";
+    } else {
+        document.querySelector(".book_form").style.display = "none";
+        document.querySelector(".movie_form").style.display = "inline-block";
+
+        document.getElementById("editRating").value = item.Rating || "";
+        document.getElementById("editIsan").value = item.ISAN || "";
+        document.getElementById("editRuntime").value = item.Runtime || "";
+        document.getElementById("editStudio").value = item.Studio || "";
+
+
+    }
   
     modal.style.display = "flex";
   

@@ -104,6 +104,10 @@
               noti.id = "noti";
               noti.style.color = response.color,
               document.querySelector('form').prepend(noti);
+            } else {
+              let el = document.querySelector("#noti");
+              el.textContent = response.msg
+              el.style.color = response.color
             }
             
           })

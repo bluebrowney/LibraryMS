@@ -3,11 +3,11 @@ const bookfield = document.getElementById('bookinfo');
 const moviefield = document.getElementById('movieinfo');
 
 const showField = () => {
-  if (type.value === 'Book') {
-    bookfield.style.display = 'show';
-    movie.style.display = 'none';
+  if (type.value === 'book') {
+    bookfield.style.display = 'block';
+    moviefield.style.display = 'none';
   } else {
-    movie.style.display = 'show';
+    moviefield.style.display = 'block';
     bookfield.style.display = 'none';
   }
 };

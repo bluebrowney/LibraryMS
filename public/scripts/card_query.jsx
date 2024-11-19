@@ -3,8 +3,6 @@
     const container = document.getElementById("data-display");
     container.innerHTML = "";
 
-    container.style.gap = "10px";
-
     // Create a table
     // Create table body
     const tbody = document.createElement("tbody");
@@ -25,7 +23,7 @@
             <h3>${title}</h3>
             <p>Genre: ${item.Genre}</p>
             <p>$${item.price}</p>
-            <p>Available:${item.Available_ct}</p>
+            <p>Available:${item.Available_Ct}</p>
             <p>Type: ${type}</p>
             <p>Publisher/Studio: ${publisherOrStudio}</p>
             <p>Aditional Info: ${additionalInfo}</p>

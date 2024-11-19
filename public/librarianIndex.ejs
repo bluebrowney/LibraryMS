@@ -10,6 +10,7 @@
     <nav>
       <a href="/home" aria-current="page">Home</a>
       <a href="/productInput">Product Input</a>
+      <a href="/history">User Manager</a>
       <a href="/">Logout</a>
     </nav>
     <form method="GET" action="/api/search">
@@ -66,21 +67,44 @@
     <div id="editModal" class="modal">
       <div class="modal-content">
         <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h2>Edit Book</h2>
+        <h2>Edit Product</h2>
         <form id="editForm">
           <label for="editTitle">Title:</label>
-          <input type="text" id="editTitle" name="title" />
+          <input type="text" id="editTitle" name="editTitle" />
           <label for="editGenre">Genre:</label>
-          <input type="text" id="editGenre" name="genre" />
+          <input type="text" id="editGenre" name="editGenre" />
           <label for="editPrice">Price:</label>
-          <input type="number" id="editPrice" name="price" step="0.01" />
-          <label for="editPublisher">Publisher:</label>
-          <input type="text" id="editPublisher" name="publisher" />
+          <input type="number" id="editPrice" name="editPrice" step="0/01" />
+          <label for="editAvailable">Available:</label>
+          <input type="number" id="editAvailable" name="editAvailable" step="1" />
+          <label for="editLeased">Leased:</label>
+          <input type="number" id="editLeased" name="editLeased" step="1" />
+          <label for="editRequests">Requests:</label>
+          <input type="number" id="editRequests" name="editRequests" step="1" />
+          <div class="book_form">
+            <label for="editNum_pages">Number of Pages:</label>
+            <input type="text" id="editNum_pages" name="editNum_pages" />
+            <label for="editPublisher">Publisher:</label>
+            <input type="text" id="editPublisher" name="editPublisher" />
+            <label for="editIsbn">ISBN:</label>
+            <input type="text" id="editIsbn" name="editIsbn" />
+          </div>
+          <div class="movie_form">
+            <label for="editRating">Rating:</label>
+            <input type="text" id="editRating" name="editRating" />
+            <label for="editIsan">ISAN:</label>
+            <input type="text" id="editIsan" name="editIsan" />
+            <label for="editRuntime">Runtime:</label>
+            <input type="number" id="editRuntime" name="editRuntime" />
+            <label for="editStudio">Studio:</label>
+            <input type="text" id="editStudio" name="editStudio" />
+          </div>
+          <br>
           <button type="button" onclick="saveChanges()">Save</button>
         </form>
       </div>
     </div>
-    <script src="display_query.js"></script>
+    <script src="card_query.jsx"></script>
     <script src="query.js"></script>
   </body>
 </html>

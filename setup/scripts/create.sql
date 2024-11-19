@@ -24,7 +24,6 @@ CREATE TABLE Librarians (
     FOREIGN KEY (AdminMem_ID) REFERENCES Admins(Member_ID) 
 );
 
-
 CREATE TABLE Product (
     Product_ID INT AUTO_INCREMENT PRIMARY KEY,
     Price DECIMAL(10, 2),

@@ -26,60 +26,69 @@ let connection = mysql.createConnection({
 /*Connect to the Database*/
 connection.connect();
 
+app.set('view engine', 'ejs');
+app.set('views', './public');
+
 app.use(express.static(path.join(__dirname, 'public', 'styles')));
 app.use(express.static(path.join(__dirname, 'public', 'scripts')));
 app.use(express.json());
 
 // SUPPLY INITIAL PAGE
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', './login.html'));
+    res.render('login');
+    //res.sendFile(path.join(__dirname, 'public', './login.html'));
 });
 
 app.post('/validate', (req, res) => {
     console.log(req.body);
     const {login, passwd} = req.body;
 
-    connection.query(`SELECT member.Member_id, Salary
-                      FROM Member LEFT JOIN librarians on member.Member_id=librarians.Member_id
-                      WHERE (Email='${login}' OR Phone_Number='${login}') AND passwd='${passwd}';`,
+    connection.query(`SELECT Count(member) as Is_Member, Count(librarian) as Is_Librarian, Count(admin) as Is_Admin 
+                      FROM role_table
+                      WHERE member IN 
+                            (SELECT Member_ID 
+                             FROM Member
+                             WHERE (Email='${req.body.login}' OR Phone_Number='${req.body.login}') AND passwd='${req.body.passwd}');`,
                     (err, results, fields) => {
                         if(err) {
                             console.log(err);
                             return;
                         }
-                        if(results.length === 0) {
-                            res.send({ error: "incorrect_credentials"});
+                        
+                        console.log(results);
+
+                        if(results[0]['Is_Member'] != 0) {
+                            res.redirect(301, '/home');
                         } else {
+                            res.send({ error: "incorrect_credentials"});
+                        } 
+                        
+                        /*else {
                             const user = results[0]
                             let role = user.Salary !== null ? 'librarian' : 'user';
                             // sessionStorage.setItem('role', role);
                             // sessionStorage.setItem('id', user.Member_id);
                             res.redirect(301, `/home?role=${role}&id=${user.Member_id}`);
-                        }
+                        }*/
                     });
 });
 
 //PAGES
 app.get('/home', (req, res) => {
-    const role = req.query.role;
-    if (role !== undefined && role.localeCompare("librarian") === 0) {
-        res.sendFile(path.join(__dirname, "public","librarianIndex.html"));
-    } else {
-        res.sendFile(path.join(__dirname, "public", "index.html"));
-    }
+    res.render("index");
 });
 
 
 app.get('/history', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', './history.html'));
+    res.render('history');
 });
 
 app.get('/productInput', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', './productInput.html'));
+    res.render('productInput');
 });
 
 app.get('/RegisterUser', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', './RegisterUser.html'));
+    res.render('RegisterUser');
 });
 
 app.post('/api/register', (req, res) => {
@@ -88,7 +97,6 @@ app.post('/api/register', (req, res) => {
                       FROM member
                       WHERE email='${query.email}' OR phone_number='${query.phonenumber}'`,
                     (err, results, field) => {
-                        console.log(results)
                         if(results[0]['Count(*)'] == 0) {
                             connection.query(`INSERT INTO member (FName, MInit, LName, Email, Phone_Number, passwd)
                                                 VALUES ('${query.fname}', '${query.minit}', '${query.lname}', '${query.email}', '${query.phonenumber}', '${query.passwd}');`,
@@ -109,25 +117,27 @@ app.post('/api/register', (req, res) => {
 
 app.post('/api/upload_book', (req, res) => {
     let query = req.body;
+    let book = query.productType == "book" ? true : false;
     connection.query(`SELECT Count(*)
-                      FROM product
-                      WHERE email='${query.email}' OR phone_number='${query.phonenumber}'`,
+                      FROM ${query.productType}
+                      WHERE ${query.isan ? "ISAN" : "ISBN"}='${book ? query.isan : query.isbn}'`,
                     (err, results, field) => {
-                        console.log(results)
                         if(results[0]['Count(*)'] == 0) {
-                            connection.query(`INSERT INTO member (FName, MInit, LName, Email, Phone_Number, passwd)
-                                                VALUES ('${query.fname}', '${query.minit}', '${query.lname}', '${query.email}', '${query.phonenumber}', '${query.passwd}');`,
+                            connection.query(`INSERT INTO Product (Price, Genre) VALUES ('${query.price}', '${query.genre}');
+                                              SET @prev_id = LAST_INSERT_ID();
+                                              INSERT INTO  ${query.productType} (Product_ID, ${book ? "ISBN" : "ISAN, Rating"})
+                                                VALUES (@prev_id, '${book ? query.isbn : query.isan}' ${book ? "" : ", "} ${book ? "" : query.rating});`,
                                                 (err, results, field) => {
                                                     if(err) {
                                                         console.log(err);
-                                                        res.send({msg: "Failed to register, please try again later.", color: "red"});
+                                                        res.send({msg: "Failed to add book, please try again later.", color: "red"});
                                                     } else {
-                                                        res.send({msg: "Register Successful, please go to login page.", color: "green"});
+                                                        res.send({msg: "Upload Successful, please go to search page to confirm update.", color: "green"});
                                                     }
                                                 });
                         }
                         else {
-                            res.send({msg: "An account with that email or phonenumber already exists", color: "red"})
+                            res.send({msg: "That product already exists", color: "red"})
                         }
                     });
 });
