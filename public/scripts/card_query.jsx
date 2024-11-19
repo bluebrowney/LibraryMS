@@ -120,11 +120,10 @@
         card.innerHTML = `
             <h3>${title}</h3>
             <p>Genre: ${item.Genre}</p>
-            <p>$${item.price}</p>
-            <p>Available:${item.Available_Ct}</p>
             <p>Type: ${type}</p>
             <p>Publisher/Studio: ${publisherOrStudio}</p>
             <p>Aditional Info: ${additionalInfo}</p>
+            <p>Available:${item.Available_Ct}</p>
         `
         if(user.is_librarian) {
           const editButton = document.createElement("button");
