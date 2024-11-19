@@ -22,3 +22,18 @@ form.addEventListener('submit', (e) => {
             process_search(data);
         })
 })
+
+document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const role = params.get('role');
+    const id = params.get('id');
+
+    if (role && id) {
+        document.querySelectorAll('a').forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && href.startsWith('/')) {
+                link.setAttribute('href', `${href}?role=${role}&id=${id}`);
+            }
+        });
+    }
+});
