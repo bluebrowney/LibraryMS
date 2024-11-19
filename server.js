@@ -5,7 +5,8 @@ require('dotenv').config()
 const mysql = require('mysql2');
 const express = require('express')
 const path = require('path')
-const cors = require('cors')
+const cors = require('cors');
+const req = require('express/lib/request');
 const app = express()
 const port = 3000
 const ip = '127.0.0.1'
@@ -90,6 +91,10 @@ app.get('/productInput', (req, res) => {
 app.get('/RegisterUser', (req, res) => {
     res.render('RegisterUser');
 });
+
+app.get('/check-out', (req,res) => {
+    res.render('checkio');
+})
 
 app.post('/api/register', (req, res) => {
     let query = req.body;
@@ -202,6 +207,26 @@ app.get('/api/search', (req, res) => {
 });
 
 
+app.post("/api/upload_book", (req,res) => {
+    const {member, product, copy} = req.body;
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    const date = `${yyyy}-${mm}-${dd}`;
+    
+    connection.query(`
+        INTERT INTO transaction (member_ID, Product_ID, Copy_Number,Date)
+            VALUES (?,?,?,?);`, [member,product,copy,date],
+        (err, result, field) => {
+            if(err){
+                console.log(err);
+                res.send({msg:"Failed confirm transaction"})
+            } else {
+                res.send({msg:"Confirmed transaction"})
+            }
+        })
+})
 
 app.listen(port, ip, () => {
     console.log(`Server is listening on ${ip} port ${port}`);
