@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function validateForm() {
     let isValid = true;
+    
 
     // Validate Book Title
     const bookTitle = document.getElementById('bookTitle');
