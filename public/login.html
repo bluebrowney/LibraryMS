@@ -19,11 +19,17 @@
           <label for="pword">Password</label>
           <input type="password" id="pword" maxlength="40" name="pword"/>
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit">Login</button>
+        <button type="button">
+           <a href="/RegisterUser" class="reg-button">Register</a>
+        </button>
       </form>
     </main>
     <script>
       document.querySelector('form').addEventListener('submit', (e) => {
+        if(e.target.id == 'reg-button') {
+          return
+        }
         e.preventDefault();
         const loginInfo = new FormData(e.target);
 
@@ -40,6 +46,7 @@
 
             const responseType = response.headers.get('Content-Type');
             if(response.redirected) {
+              console.log(response.url)
               return response.url;
             } else if (responseType && responseType.includes('application/json')) {
               return response.json();

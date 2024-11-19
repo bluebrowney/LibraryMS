@@ -9,29 +9,22 @@
     <script type="module" src="script.js"></script>
   </head>
   <body>
-      <nav>
-        <a href="/home" aria-current="page">Home</a>
-        <a href="/RegisterUser">Register</a>
-        <a href="/productInput">Product Input</a>
-        <a href="/history">History</a>
-        <a href="/login">Logout</a>
-      </nav>
     <!-- actual modal for registeration -->
     <div class="register-modal">
       <h2 class="page-title">Register</h2>
       <!-- set action to php file-->
-      <form action="placeholder.php">
+      <form method="POST" action="/api/register">
         <div class="">
           <label for="fname">First Name</label>
-          <input id="fname" type="text" maxlength="20" />
+          <input id="fname" type="text" maxlength="20" name="fname"/>
         </div>
         <div class="">
           <label for="midinit">Middle Initial</label>
-          <input id="midinit" type="text" maxlength="1" />
+          <input id="midinit" type="text" maxlength="1" name="minit"/>
         </div>
         <div class="">
           <label for="lname">Last Name</label>
-          <input id="lname" type="text" maxlength="20" />
+          <input id="lname" type="text" maxlength="20" name="lname"/>
         </div>
         <div class="">
           <label for="phonenumber">Phone Number</label>
@@ -39,22 +32,85 @@
             id="phonenumber"
             type="text"
             maxlength="10"
+            name="phonenumber"
           />
         </div>
         <div class="">
           <label for="email">Email</label>
-          <input id="email" type="email" maxlength="40" />
+          <input id="email" type="email" maxlength="40" name="email"/>
         </div>
         <div class="">
           <label for="pword">Password</label>
-          <input id="pword" type="password" maxlength="40" />
+          <input id="pword" type="password" maxlength="40" name="pword"/>
         </div>
         <div class="">
           <label for="cpword">Confirm Password</label>
-          <input id="cpword" type="password" maxlength="40" />
+          <input id="cpword" type="password" maxlength="40" name="cpword"/>
         </div>
         <button>Submit</button>
+        <button type="button">
+          <a href="/" class="ret-button">Login</a>
+       </button>
       </form>
     </div>
+    <script>
+      document.querySelector('form').addEventListener('submit', (e) => {
+        if(e.target.class == 'ret-button') {
+          return
+        }
+        e.preventDefault();
+        const registerInfo = new FormData(e.target);
+
+        if(registerInfo.get('pword') != registerInfo.get('cpword')) {
+            if(document.querySelector('#noti') == undefined) {
+                noti = document.createElement('p')
+                noti.innerText = "Password does not match"
+                noti.id = "noti";
+                noti.style.color = 'red'
+                document.querySelector('form').prepend(noti);
+            }
+            return
+        }
+
+        fetch('http://localhost:3000/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': "application/json" },
+          body: JSON.stringify({
+            fname: registerInfo.get('fname'),
+            minit: registerInfo.get('minit'),
+            lname: registerInfo.get('lname'),
+            phonenumber: registerInfo.get('phonenumber'),
+            email: registerInfo.get('email'),
+            passwd: registerInfo.get('pword')
+          })
+        })
+          .then( response => {
+            if(!response.ok) {
+              throw new Error("Server Error", response.statusText);
+            }
+
+            if (response.headers.get('Content-Type').includes('application/json')) {
+              return response.json();
+            } else {
+              throw new Error("ERROR: Corrupted Data");
+            }
+
+          })
+          .then(response => {
+
+            if(document.querySelector('#noti') == undefined) {
+              noti = document.createElement('p')
+              noti.innerText = response.msg,
+              noti.id = "noti";
+              noti.style.color = response.color,
+              document.querySelector('form').prepend(noti);
+            }
+            
+          })
+          .catch(err => {
+            console.log(err);
+          })
+      });
+    </script>
   </body>
 </html>

@@ -10,6 +10,7 @@ const port = 3000
 const ip = '127.0.0.1'
 
 
+
 /*Define Connect through MySQL Server to Database (LibraryMS)*/
 let connection = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -34,6 +35,8 @@ app.get('/', (req, res) => {
 
 app.post('/validate', (req, res) => {
 
+    console.log(req.body);
+
     connection.query(`SELECT Count(*) 
                       FROM Member
                       WHERE (Email='${req.body.login}' OR Phone_Number='${req.body.login}') AND passwd='${req.body.passwd}';`,
@@ -48,7 +51,7 @@ app.post('/validate', (req, res) => {
                         } else {
                             res.send({ error: "incorrect_credentials"});
                         }
-                    })
+                    });
 });
 
 //PAGES
@@ -69,16 +72,64 @@ app.get('/RegisterUser', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', './RegisterUser.html'));
 });
 
+app.post('/api/register', (req, res) => {
+    let query = req.body;
+    connection.query(`SELECT Count(*)
+                      FROM member
+                      WHERE email='${query.email}' OR phone_number='${query.phonenumber}'`,
+                    (err, results, field) => {
+                        console.log(results)
+                        if(results[0]['Count(*)'] == 0) {
+                            connection.query(`INSERT INTO member (FName, MInit, LName, Email, Phone_Number, passwd)
+                                                VALUES ('${query.fname}', '${query.minit}', '${query.lname}', '${query.email}', '${query.phonenumber}', '${query.passwd}');`,
+                                                (err, results, field) => {
+                                                    if(err) {
+                                                        console.log(err);
+                                                        res.send({msg: "Failed to register, please try again later.", color: "red"});
+                                                    } else {
+                                                        res.send({msg: "Register Successful, please go to login page.", color: "green"});
+                                                    }
+                                                });
+                        }
+                        else {
+                            res.send({msg: "An account with that email or phonenumber already exists", color: "red"})
+                        }
+                    });
+});
 
+app.post('/api/upload_book', (req, res) => {
+    let query = req.body;
+    connection.query(`SELECT Count(*)
+                      FROM product
+                      WHERE email='${query.email}' OR phone_number='${query.phonenumber}'`,
+                    (err, results, field) => {
+                        console.log(results)
+                        if(results[0]['Count(*)'] == 0) {
+                            connection.query(`INSERT INTO member (FName, MInit, LName, Email, Phone_Number, passwd)
+                                                VALUES ('${query.fname}', '${query.minit}', '${query.lname}', '${query.email}', '${query.phonenumber}', '${query.passwd}');`,
+                                                (err, results, field) => {
+                                                    if(err) {
+                                                        console.log(err);
+                                                        res.send({msg: "Failed to register, please try again later.", color: "red"});
+                                                    } else {
+                                                        res.send({msg: "Register Successful, please go to login page.", color: "green"});
+                                                    }
+                                                });
+                        }
+                        else {
+                            res.send({msg: "An account with that email or phonenumber already exists", color: "red"})
+                        }
+                    });
+});
 
 // SEARCH QUERY
 app.get('/api/search', (req, res) => {
-    let options, sortby, search_str;
     condition = '';
     let cond_start = true;
 
     //HANDLING GENRE FILTER
     if (req.query.genre != undefined) {
+        console.log(req.query.genre);
         if(typeof req.query.genre == 'string') {
             condition += `genre IN ('${req.query.genre}')`
         } else {
@@ -95,10 +146,9 @@ app.get('/api/search', (req, res) => {
     /*Checking Search String*/
     if(req.query.search_str != undefined && req.query.search_str.trim() != '') {
         condition += `${cond_start?"":"AND"} (ISAN LIKE '%${req.query.search_str}%' OR 
-                           Movie_Title LIKE '%${req.query.search_str}%' OR 
+                           Title LIKE '%${req.query.search_str}%' OR 
                            Studio LIKE '%${req.query.search_str}%' OR 
                            ISBN LIKE '%${req.query.search_str}%' OR
-                           Book_Title LIKE '%${req.query.search_str}%' OR 
                            Publisher LIKE '%${req.query.search_str}%') `;
         cond_start = false;
     }
@@ -126,6 +176,7 @@ app.get('/api/search', (req, res) => {
                             console.log(err);
                         }
                         
+                        console.log(results);
                         res.send(results);
                       })
 });

@@ -10,7 +10,6 @@
   
     // Create table headers
     const headers = [
-      "Product ID",
       "Title",
       "Genre",
       "Price",
@@ -38,8 +37,8 @@
       const row = document.createElement("tr");
   
       // Determine type (Book or Movie)
-      const type = item.Book_Title ? "Book" : "Movie";
-      const title = item.Book_Title || item.Movie_Title;
+      const type = item.ISBN ? "Book" : "Movie";
+      const title = item.Title
       const publisherOrStudio = item.Publisher || item.Studio;
       const additionalInfo = item.Page_Count
         ? `Pages: ${item.Page_Count}`
@@ -47,7 +46,6 @@
   
       // Create cells
       const cells = [
-        item.Product_ID,
         title || "N/A",
         item.Genre || "N/A",
         `$${item.Price}`,

@@ -10,7 +10,6 @@
   <body>
     <nav>
       <a href="/home" aria-current="page">Home</a>
-      <a href="/RegisterUser">Register</a>
       <a href="/productInput">Product Input</a>
       <a href="/history">History</a>
       <a href="/">Logout</a>
@@ -73,6 +72,56 @@
         <button type="submit">Submit</button>
       </form>
     </main>
-    <script src="productInput.js"></script>
+    <script>
+      document.querySelector('form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const bookInfo = new FormData(e.target);
+
+        if(bookInfo.get('pword') != bookInfo.get('cpword')) {
+            if(document.querySelector('#noti') == undefined) {
+                noti = document.createElement('p')
+                noti.innerText = "Password does not match"
+                noti.id = "noti";
+                noti.style.color = 'red'
+                document.querySelector('form').prepend(noti);
+            }
+            return
+        }
+
+        fetch('http://localhost:3000/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': "application/json" },
+          body: JSON.stringify({
+            productType: bookInfo.get('productType')
+          })
+        })
+          .then( response => {
+            if(!response.ok) {
+              throw new Error("Server Error", response.statusText);
+            }
+
+            if (response.headers.get('Content-Type').includes('application/json')) {
+              return response.json();
+            } else {
+              throw new Error("ERROR: Corrupted Data");
+            }
+
+          })
+          .then(response => {
+
+            if(document.querySelector('#noti') == undefined) {
+              noti = document.createElement('p')
+              noti.innerText = response.msg,
+              noti.id = "noti";
+              noti.style.color = response.color,
+              document.querySelector('form').prepend(noti);
+            }
+            
+          })
+          .catch(err => {
+            console.log(err);
+          })
+      });
+    </script>
   </body>
 </html>
